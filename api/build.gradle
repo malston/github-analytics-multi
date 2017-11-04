@@ -1,10 +1,16 @@
 dependencies {
     compile project(':core')
-    // compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.4.3.RELEASE'
-    //
-    // compile project(':sql-backed-persistence')
-    //
-    // testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '1.4.3.RELEASE'
-    // testCompile group: 'com.jayway.restassured', name: 'rest-assured', version: '2.9.0'
-    // testCompile group: 'com.h2database', name: 'h2', version: '1.4.193'
+
+    compile ('org.springframework.analytics:spring-analytics:1.0.0.RELEASE')
+    compile ('org.springframework.cloud:spring-cloud-starter-eureka')
+    compile ('org.springframework.cloud:spring-cloud-starter-stream-rabbit')
+    compile ('org.springframework.boot:spring-boot-starter-actuator')
+    compile ('org.springframework.boot:spring-boot-starter-web')
+    compile ('io.micrometer:micrometer-spring-legacy:latest.release')
+    compile ('io.micrometer:micrometer-registry-prometheus:latest.release')
+
+    testCompile ('org.springframework.cloud:spring-cloud-starter-contract-stub-runner')
+    testCompile ('org.springframework.cloud:spring-cloud-stream-test-support')
+    testCompile ('org.springframework.cloud:spring-cloud-starter-contract-verifier')
+    testCompile ('org.awaitility:awaitility:3.0.0')
 }
