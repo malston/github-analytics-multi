@@ -1,0 +1,4 @@
+rootProject.name = 'github-analytics'
+
+include 'core'
+include 'api'

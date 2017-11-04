@@ -1,0 +1,140 @@
+buildscript {
+	repositories {
+		mavenCentral()
+		mavenLocal()
+		maven { url "http://repo.spring.io/snapshot" }
+		maven { url "http://repo.spring.io/milestone" }
+		maven { url "http://repo.spring.io/release" }
+	}
+  Closure<String> getProp = { String propName ->
+      return System.properties[propName] ?:
+              project.gradle.startParameter.systemPropertiesArgs.get(propName) ?:
+                      hasProperty(propName) ? getProperty(propName) : ""
+  }
+
+  String bootVersion = getProp("BOOT_VERSION") ?: "1.5.3.RELEASE"
+  logger.lifecycle("BOOT_VERSION is: [${bootVersion}]")
+
+  dependencies {
+      classpath "org.springframework.boot:spring-boot-gradle-plugin:${bootVersion}"
+      classpath "org.springframework.cloud:spring-cloud-contract-gradle-plugin:${project.hasProperty("scContractVersion") ? project.property("scContractVersion") : "1.1.1.RELEASE"}"
+  }
+}
+
+subprojects {
+	// apply plugin: 'java'
+	apply plugin: 'groovy'
+	apply plugin: 'org.springframework.boot'
+	apply plugin: 'spring-cloud-contract'
+	apply plugin: 'maven-publish'
+	apply from: '../gradle/pipeline.gradle'
+
+	group = 'com.example.github'
+	version = getProp('newVersion') ?: '0.0.1-SNAPSHOT'
+
+	ext {
+		projectGroupId = project.group
+		projectArtifactId = project.name
+		projectVersion = project.version
+		stubrunnerIds = 'com.example.github:github-webhook'
+	}
+
+	repositories {
+		mavenCentral()
+		mavenLocal()
+		if (getProp("M2_LOCAL")) {
+			maven {
+				url getProp("M2_LOCAL")
+			}
+		}
+		maven { url "http://repo.spring.io/snapshot" }
+		maven { url "http://repo.spring.io/milestone" }
+		maven { url "http://repo.spring.io/release" }
+	}
+
+	dependencyManagement {
+		imports {
+			mavenBom "org.springframework.cloud:spring-cloud-dependencies:$BOM_VERSION"
+		}
+	}
+
+	if (gradle.startParameter.taskRequests.any { it.args.contains("apiCompatibility") }) {
+		contracts {
+			baseClassForTests = 'org.springframework.github.BaseClass'
+			basePackageForTests = 'com.example.contracttests'
+			// REPO_WITH_JARS is deprecated
+			contractsRepositoryUrl = getProp('REPO_WITH_JARS') ?: getProp('REPO_WITH_BINARIES') ?: 'http://localhost:8081/artifactory/libs-release-local'
+			contractsPath = "/"
+			contractDependency {
+				groupId = project.group
+				artifactId = project.name
+				delegate.classifier = "stubs"
+				delegate.version = getProp("latestProductionVersion")
+			}
+		}
+	} else {
+		contracts {
+			baseClassForTests = 'org.springframework.github.BaseClass'
+			basePackageForTests = 'com.example.contracttests'
+		}
+	}
+
+	dependencies {
+		compile ('org.springframework.analytics:spring-analytics:1.0.0.RELEASE')
+		compile ('org.springframework.cloud:spring-cloud-starter-eureka')
+		compile ('org.hibernate:hibernate-validator')
+		compile ('org.springframework.cloud:spring-cloud-starter-stream-rabbit')
+		compile ('org.springframework.boot:spring-boot-starter-actuator')
+		compile ('org.flywaydb:flyway-core')
+		compile ('org.springframework.boot:spring-boot-starter-data-jpa')
+		compile ('org.springframework.boot:spring-boot-starter-web')
+		compile ('com.h2database:h2')
+		compile ('mysql:mysql-connector-java')
+		compile ('io.micrometer:micrometer-spring-legacy:latest.release')
+		compile ('io.micrometer:micrometer-registry-prometheus:latest.release')
+
+		testCompile ('org.springframework.cloud:spring-cloud-starter-contract-stub-runner')
+		testCompile ('org.springframework.cloud:spring-cloud-stream-test-support')
+		testCompile ('org.springframework.cloud:spring-cloud-starter-contract-verifier')
+		testCompile ('org.awaitility:awaitility:3.0.0')
+	}
+
+	publishing {
+		repositories {
+			maven {
+				// REPO_WITH_JARS is deprecated
+				url getProp('REPO_WITH_JARS') ?: getProp('REPO_WITH_BINARIES') ?: 'http://localhost:8081/artifactory/libs-release-local'
+				credentials {
+					username getProp('M2_SETTINGS_REPO_USERNAME') ?: 'admin'
+					password getProp('M2_SETTINGS_REPO_PASSWORD') ?: 'password'
+				}
+			}
+		}
+		publications {
+			mavenJava(MavenPublication) {
+				artifactId project.name
+				from components.java
+			}
+		}
+	}
+}
+
+apply from: 'gradle/pipeline.gradle'
+
+def coreProject = project(':core')
+
+configure(coreProject) {
+  bootRepackage {
+    enabled = false
+  }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.5'
+}
+
+String getProp(String propName) {
+	return hasProperty(propName) ?
+			(getProperty(propName) ?: System.properties[propName]) : System.properties[propName] ?:
+			System.getenv(propName)
+}
