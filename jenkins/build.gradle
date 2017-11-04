@@ -3,7 +3,7 @@ apply plugin: 'groovy'
 sourceSets {
     main {
         resources {
-            srcDirs 'declarative-pipeline'
+            srcDirs 'pipeline'
         }
     }
 }
