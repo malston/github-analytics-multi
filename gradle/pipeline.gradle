@@ -1,5 +1,5 @@
 // TODO: Consider moving these to a plugin:
-configure(subprojects) {
+configure(subprojects - project(':jenkins')) {
   test {
 	    description = "Task to run unit and integration tests"
 	    testLogging {
