@@ -1,4 +1,4 @@
-rootProject.name = 'github-analytics'
+rootProject.name = 'github-analytics-multi'
 
 include 'core'
 include 'api'
