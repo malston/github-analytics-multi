@@ -33,7 +33,7 @@ configure(subprojects - project(':jenkins')) {
 
 	ext {
 		projectGroupId = project.group
-		projectArtifactId = project.name
+		projectArtifactId = 'github-analytics-' + project.name
 		projectVersion = project.version
 		stubrunnerIds = 'com.example.github:github-webhook'
 	}
@@ -66,7 +66,7 @@ configure(subprojects - project(':jenkins')) {
 			contractsPath = "/"
 			contractDependency {
 				groupId = project.group
-				artifactId = project.name
+				artifactId = projectArtifactId
 				delegate.classifier = "stubs"
 				delegate.version = getProp("latestProductionVersion")
 			}
