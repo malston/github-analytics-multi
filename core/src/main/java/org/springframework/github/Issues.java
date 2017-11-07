@@ -25,41 +25,42 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "issues")
 class Issues {
-	@Id
-	@GeneratedValue
-	private Long id;
-	@NotNull
-	private String username;
-	@NotNull
-	private String repository;
+    @Id
+    @GeneratedValue
+    private Long id;
+    @NotNull
 
-	Issues(String username, String repository) {
-		this.username = username;
-		this.repository = repository;
-	}
+    private String username;
+    @NotNull
+    private String repository;
 
-	Issues() {
-	}
+    Issues(String username, String repository) {
+        this.username = username;
+        this.repository = repository;
+    }
 
-	String getUsername() {
-		return this.username;
-	}
+    Issues() {
+    }
 
-	void setUsername(String username) {
-		this.username = username;
-	}
+    String getUsername() {
+        return this.username;
+    }
 
-	String getRepository() {
-		return this.repository;
-	}
+    void setUsername(String username) {
+        this.username = username;
+    }
 
-	void setRepository(String lastname) {
-		this.repository = lastname;
-	}
+    String getRepository() {
+        return this.repository;
+    }
 
-	@Override
-	public String toString() {
-		return "IssueCreation [username=" + this.username + ", repository=" + this.repository
-				+ "]";
-	}
+    void setRepository(String lastname) {
+        this.repository = lastname;
+    }
+
+    @Override
+    public String toString() {
+        return "IssueCreation [username=" + this.username + ", repository=" + this.repository
+                + "]";
+    }
 }

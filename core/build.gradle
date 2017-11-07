@@ -5,4 +5,7 @@ dependencies {
     runtime ('org.flywaydb:flyway-core')
     runtime ('com.h2database:h2')
     runtime ('mysql:mysql-connector-java')
+
+    testCompile ('org.assertj:assertj-core')
+    testRuntime ('org.apache.tomcat.embed:tomcat-embed-el')
 }
