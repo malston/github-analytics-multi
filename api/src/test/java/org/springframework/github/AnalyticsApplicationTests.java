@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.BDDAssertions.then;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = AnalyticsApplication.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(classes = AnalyticsApplication.class, webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureStubRunner(ids = {"com.example.github:github-webhook"},
 		repositoryRoot = "${REPO_WITH_JARS:https://repo.spring.io/milestone/}")
 @ActiveProfiles("test")
