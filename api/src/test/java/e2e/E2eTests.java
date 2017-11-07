@@ -1,11 +1,5 @@
 package e2e;
 
-import java.io.IOException;
-import java.lang.invoke.MethodHandles;
-import java.net.URI;
-import java.nio.file.Files;
-import java.util.concurrent.TimeUnit;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.awaitility.Awaitility;
@@ -21,6 +15,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
+import java.lang.invoke.MethodHandles;
+import java.net.URI;
+import java.nio.file.Files;
+import java.util.concurrent.TimeUnit;
+
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.awaitility.Awaitility.await;
 
@@ -29,7 +29,7 @@ import static org.awaitility.Awaitility.await;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = E2eTests.class,
-		webEnvironment = SpringBootTest.WebEnvironment.NONE)
+		webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @EnableAutoConfiguration
 public class E2eTests {
 
